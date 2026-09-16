@@ -1,9 +1,10 @@
-// ═══════════════════════════════════════════════════════════
-//  Diamond Perfume — Store Configuration
-//  عدّل بيانات متجرك من هنا فقط / Edit your store info here
-// ═══════════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════
+   Diamond Perfume — Store Configuration
+   عدّل بيانات متجرك من هنا فقط / Edit your store info here
+   ═══════════════════════════════════════════════════════════ */
+window.DP = window.DP || {};
 
-export const CONFIG = {
+DP.CONFIG = {
   storeName: 'Diamond Perfume',
   storeNameAr: 'عطور الماس',
 
@@ -19,8 +20,9 @@ export const CONFIG = {
     en: 'Karameh St., Verdun, Beirut, Lebanon',
   },
   // Google Maps embed (shows the exact store pin)
-  mapEmbed: (lang = 'ar') =>
-    `https://maps.google.com/maps?q=diamondperfumeverdun%20Karame%20Street%20Beirut%20Lebanon&z=17&hl=${lang}&output=embed`,
+  mapEmbed: function (lang) {
+    return 'https://maps.google.com/maps?q=diamondperfumeverdun%20Karame%20Street%20Beirut%20Lebanon&z=17&hl=' + (lang || 'ar') + '&output=embed';
+  },
 
   // Social media
   social: {
@@ -44,4 +46,4 @@ export const CONFIG = {
     ar: 'توصيل لجميع المناطق اللبنانية',
     en: 'Delivery to all Lebanese regions',
   },
-}
+};

@@ -1,8 +1,9 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import { CONFIG } from './config'
+/* ═══════════════════════════════════════════════════════════
+   Diamond Perfume — Translations (AR / EN)
+   ═══════════════════════════════════════════════════════════ */
+window.DP = window.DP || {};
 
-// ── Translations ────────────────────────────────────────────
-const T = {
+DP.I18N = {
   ar: {
     dir: 'rtl',
     langName: 'العربية',
@@ -22,6 +23,7 @@ const T = {
     // header
     cart: 'السلة',
     callUs: 'اتصل بنا',
+    brandSub: 'عطور الماس • فردان',
     // hero
     heroBadge: 'فردان • بيروت • لبنان',
     heroTitleA: 'عطرٌ يليق',
@@ -73,6 +75,7 @@ const T = {
     aboutFeat3D: 'تغليف فاخر مجاني يليق بمن تحب',
     hoursTitle: 'أوقات الدوام',
     visitUs: 'زورونا في المتجر',
+    expSpan: 'سنوات من الشغف',
     // location
     locKicker: 'موقعنا',
     locTitle: 'في قلب فردان',
@@ -81,6 +84,7 @@ const T = {
     locHours: 'الدوام',
     locDirections: 'احصل على الاتجاهات',
     locOpen: 'افتح في خرائط غوغل',
+    locLandmark: 'مقابل سنتر فردان',
     // cart
     cartTitle: 'سلة التسوّق',
     cartEmpty: 'سلّتك فارغة',
@@ -163,6 +167,7 @@ const T = {
     navLocation: 'Location',
     cart: 'Cart',
     callUs: 'Call us',
+    brandSub: 'Verdun • Beirut',
     heroBadge: 'Verdun • Beirut • Lebanon',
     heroTitleA: 'A fragrance',
     heroTitleB: 'worthy of diamonds',
@@ -209,6 +214,7 @@ const T = {
     aboutFeat3D: 'Free luxury wrapping for your loved ones',
     hoursTitle: 'Opening Hours',
     visitUs: 'Visit our boutique',
+    expSpan: 'Years of passion',
     locKicker: 'Find Us',
     locTitle: 'In the heart of Verdun',
     locAddress: 'Address',
@@ -216,6 +222,7 @@ const T = {
     locHours: 'Hours',
     locDirections: 'Get Directions',
     locOpen: 'Open in Google Maps',
+    locLandmark: 'Verdun, Beirut',
     cartTitle: 'Shopping Cart',
     cartEmpty: 'Your cart is empty',
     cartEmptySub: 'Discover our collection and add what you love',
@@ -266,7 +273,7 @@ const T = {
     footRights: 'All rights reserved',
     footMade: 'Crafted with passion in Beirut',
     waTooltip: 'Chat on WhatsApp',
-    waMsg: "Hello Diamond Perfume! I have a question about your fragrances.",
+    waMsg: 'Hello Diamond Perfume! I have a question about your fragrances.',
     curUSD: '$',
     curLBP: 'LBP',
     sizeLabel: 'Size',
@@ -276,59 +283,4 @@ const T = {
     close: 'Close',
     ratingOf: 'of 5',
   },
-}
-
-// ── Context ─────────────────────────────────────────────────
-const LangCtx = createContext(null)
-const CurrCtx = createContext(null)
-
-export function AppProviders({ children }) {
-  const [lang, setLang] = useState(() => localStorage.getItem('dp-lang') || 'ar')
-  const [curr, setCurr] = useState(() => localStorage.getItem('dp-curr') || 'USD')
-
-  useEffect(() => {
-    const t = T[lang]
-    document.documentElement.lang = lang
-    document.documentElement.dir = t.dir
-    document.documentElement.dataset.lang = lang
-    localStorage.setItem('dp-lang', lang)
-  }, [lang])
-  useEffect(() => localStorage.setItem('dp-curr', curr), [curr])
-
-  const langVal = useMemo(
-    () => ({
-      lang,
-      setLang,
-      toggleLang: () => setLang((l) => (l === 'ar' ? 'en' : 'ar')),
-      t: T[lang],
-      isAr: lang === 'ar',
-    }),
-    [lang]
-  )
-  const currVal = useMemo(
-    () => ({
-      curr,
-      setCurr,
-      // format a USD base price in the active currency
-      fmt: (usd) => {
-        if (curr === 'USD') return `$${Number(usd).toLocaleString('en-US')}`
-        const lbp = Math.round((usd * CONFIG.usdToLbp) / 1000) * 1000
-        return `${lbp.toLocaleString('en-US')} ${T[langVal.lang].curLBP}`
-      },
-      fmtBoth: (usd) => {
-        const lbp = Math.round((usd * CONFIG.usdToLbp) / 1000) * 1000
-        return `$${Number(usd).toLocaleString('en-US')} (${lbp.toLocaleString('en-US')} LBP)`
-      },
-    }),
-    [curr, langVal.lang]
-  )
-
-  return (
-    <LangCtx.Provider value={langVal}>
-      <CurrCtx.Provider value={currVal}>{children}</CurrCtx.Provider>
-    </LangCtx.Provider>
-  )
-}
-
-export const useLang = () => useContext(LangCtx)
-export const useCurr = () => useContext(CurrCtx)
+};
