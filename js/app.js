@@ -10,10 +10,7 @@
   var D = window.DP.DATA;
   var T = window.DP.I18N;
 
-  var LB_CITIES = [
-    'بيروت', 'طرابلس', 'صيدا', 'صور', 'زحلة', 'جونيه', 'جبيل', 'النبطية', 'بعلبك', 'عاليه',
-    'Beirut', 'Tripoli', 'Saida', 'Tyre', 'Zahle', 'Jounieh',
-  ];
+  var AREA_OTHER = '__other__';
 
   /* ── State ─────────────────────────────────────────────── */
   function loadJSON(key) {
@@ -31,7 +28,7 @@
     sent: null, // order number after send
     orderNo: null,
     menuOpen: false,
-    form: { name: '', phone: '', city: '', area: '', address: '', notes: '' },
+    form: { name: '', phone: '', city: '', area: '', areaOther: '', address: '', notes: '' },
     errors: {},
   };
   if (state.lang !== 'ar' && state.lang !== 'en') state.lang = 'ar';
@@ -99,8 +96,11 @@
     shield: function (s) {
       return '<svg width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-3.6 8-10V5l-8-3-8 3v7c0 6.4 8 10 8 10z"/><path d="m9 11.5 2 2 4-4.5"/></svg>';
     },
-    gift: function (s) {
-      return '<svg width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg>';
+    tag: function (s) {
+      return '<svg width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 12.4 12.4 20.6a2 2 0 0 1-2.83 0l-6.2-6.2a2 2 0 0 1-.58-1.5l.3-6.06A2 2 0 0 1 5.03 4.9l6.06-.3a2 2 0 0 1 1.5.58l6.2 6.2a2 2 0 0 1 0 2.83Z"/><circle cx="8.2" cy="8.2" r="1.4"/></svg>';
+    },
+    chevron: function (s) {
+      return '<svg width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
     },
     cash: function (s) {
       return '<svg width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 12h.01M18 12h.01"/></svg>';
@@ -289,7 +289,7 @@
 
   /* ── Marquee ───────────────────────────────────────────── */
   function renderMarquee() {
-    var items = [t().top1, t().top2, t().top3, t().top4, t().top5];
+    var items = [t().top1, t().top2, t().top3, t().top4];
     var inner = items.map(function (txt) {
       return '<span><i>✦</i> ' + esc(txt) + '</span>';
     }).join('');
@@ -302,8 +302,8 @@
     var items = [
       ['truck', t().top1, t().aboutFeat2D],
       ['shield', t().aboutFeat1T, t().aboutFeat1D],
-      ['gift', t().top3, t().aboutFeat3D],
-      ['cash', t().top4, t().coDeliveryInfo],
+      ['tag', t().aboutFeat3T, t().aboutFeat3D],
+      ['cash', t().top3, t().coDeliveryInfo],
     ];
     $('#trust-grid').innerHTML = items.map(function (it, i) {
       return '<div class="trust-item reveal reveal-d' + (i + 1) + '">' + I[it[0]](26) +
@@ -426,7 +426,7 @@
     var feats = [
       ['shield', t().aboutFeat1T, t().aboutFeat1D],
       ['truck', t().aboutFeat2T, t().aboutFeat2D],
-      ['gift', t().aboutFeat3T, t().aboutFeat3D],
+      ['tag', t().aboutFeat3T, t().aboutFeat3D],
     ];
     $('#about-feats').innerHTML = feats.map(function (f) {
       return '<div class="feat">' + I[f[0]](22) + '<b>' + esc(f[1]) + '</b><span>' + esc(f[2]) + '</span></div>';
@@ -445,7 +445,9 @@
     state.menuOpen = true;
     var m = $('#mobile-menu');
     m.innerHTML = '<button class="icon-btn menu-close" id="menu-close" aria-label="' + esc(t().close) + '">' +
-      I.close(22) + '</button>' + navHtml() + socialRowHtml('margin-top:1rem');
+      I.close(22) + '</button>' +
+      '<img class="menu-logo" src="assets/images/logo-icon.png" alt="Diamond Perfume">' +
+      navHtml() + socialRowHtml('margin-top:1rem');
     m.hidden = false;
     updateLock();
   }
@@ -554,8 +556,8 @@
       L.push('━━━━━━━━━━━━━━━━━');
       L.push('👤 *الاسم الكامل:* ' + f.name);
       L.push('📱 *رقم الهاتف:* ' + f.phone);
-      L.push('🏙️ *المدينة:* ' + f.city);
-      L.push('📍 *المنطقة:* ' + f.area);
+      L.push('🏙️ *المدينة:* ' + cityName());
+      L.push('📍 *المنطقة:* ' + areaValue());
       L.push('🏠 *العنوان بالتفاصيل:* ' + f.address);
       if (f.notes.trim()) L.push('📝 *ملاحظات:* ' + f.notes);
       L.push('━━━━━━━━━━━━━━━━━');
@@ -572,8 +574,8 @@
       L.push('━━━━━━━━━━━━━━━━━');
       L.push('👤 *Full Name:* ' + f.name);
       L.push('📱 *Phone:* ' + f.phone);
-      L.push('🏙️ *City:* ' + f.city);
-      L.push('📍 *Area:* ' + f.area);
+      L.push('🏙️ *City:* ' + cityName());
+      L.push('📍 *Area:* ' + areaValue());
       L.push('🏠 *Detailed Address:* ' + f.address);
       if (f.notes.trim()) L.push('📝 *Notes:* ' + f.notes);
       L.push('━━━━━━━━━━━━━━━━━');
@@ -589,6 +591,74 @@
     return 'https://wa.me/' + C.whatsappNumber + '?text=' + encodeURIComponent(L.join('\n'));
   }
 
+  /* ── City / Area dependent dropdowns ───────────────────── */
+  function cityById(id) {
+    var l = (D.CITIES || []).filter(function (c) { return c.id === id; });
+    return l.length ? l[0] : null;
+  }
+  function cityLabel(c) { return c[state.lang]; }
+  function areaLabel(a) { return a[state.lang]; }
+
+  function selectShell(inner, disabled) {
+    return '<div class="select-wrap' + (disabled ? ' is-disabled' : '') + '">' + inner +
+      '<span class="select-arrow" aria-hidden="true">' + I.chevron(17) + '</span></div>';
+  }
+
+  function cityFieldHtml() {
+    var f = state.form, er = state.errors;
+    var opts = '<option value="">' + esc(t().coCityPh) + '</option>' +
+      (D.CITIES || []).map(function (c) {
+        return '<option value="' + esc(c.id) + '"' + (f.city === c.id ? ' selected' : '') + '>' +
+          esc(cityLabel(c)) + '</option>';
+      }).join('');
+    return '<div class="form-field ' + (er.city ? 'invalid' : '') + '">' +
+      '<label>' + esc(t().coCity) + ' *</label>' +
+      selectShell('<select name="city" id="co-city">' + opts + '</select>', false) +
+      (er.city ? '<span class="err">' + esc(er.city) + '</span>' : '') +
+      '</div>';
+  }
+
+  function areaFieldHtml() {
+    var f = state.form, er = state.errors;
+    var city = cityById(f.city);
+    var areas = city ? city.areas : [];
+    var disabled = !city;
+    var ph = disabled ? t().coAreaFirst : t().coAreaPh;
+    // القيمة المخزّنة = فهرس المنطقة، حتى يبقى الاختيار ثابتاً عند تبديل اللغة
+    var opts = '<option value="">' + esc(ph) + '</option>' +
+      areas.map(function (a, idx) {
+        return '<option value="' + idx + '"' + (f.area === String(idx) ? ' selected' : '') + '>' +
+          esc(areaLabel(a)) + '</option>';
+      }).join('') +
+      (disabled ? '' : '<option value="' + AREA_OTHER + '"' +
+        (f.area === AREA_OTHER ? ' selected' : '') + '>' + esc(t().coAreaOther) + '</option>');
+
+    return '<div class="form-field ' + (er.area ? 'invalid' : '') + '">' +
+      '<label>' + esc(t().coArea) + ' *</label>' +
+      selectShell('<select name="area" id="co-area"' + (disabled ? ' disabled' : '') + '>' + opts + '</select>', disabled) +
+      (f.area === AREA_OTHER
+        ? '<input class="area-other" name="areaOther" value="' + esc(f.areaOther || '') +
+          '" placeholder="' + esc(t().coAreaOtherPh) + '">'
+        : '') +
+      (er.area ? '<span class="err">' + esc(er.area) + '</span>' : '') +
+      '</div>';
+  }
+
+  /* اسم المدينة المعروض (وليس الـ id) */
+  function cityName() {
+    var c = cityById(state.form.city);
+    return c ? cityLabel(c) : state.form.city;
+  }
+
+  /* الاسم النهائي للمنطقة كما يُرسل في الطلب */
+  function areaValue() {
+    if (state.form.area === AREA_OTHER) return (state.form.areaOther || '').trim();
+    var city = cityById(state.form.city);
+    if (!city || state.form.area === '') return '';
+    var a = city.areas[Number(state.form.area)];
+    return a ? areaLabel(a) : '';
+  }
+
   function checkoutHtml() {
     var f = state.form;
     var er = state.errors;
@@ -596,6 +666,7 @@
       '<div class="modal-box">' +
       '<button class="icon-btn modal-close" data-close-modal aria-label="' + esc(t().close) + '">' + I.close(20) + '</button>' +
       '<div class="co-head">' +
+      '<img class="co-logo" src="assets/images/logo-icon.png" alt="Diamond Perfume">' +
       '<h3 class="display"><span class="gold-text">' + esc(t().coTitle) + '</span></h3>' +
       '<p>' + esc(t().coSub) + '</p></div>' +
       '<div class="co-grid">' +
@@ -611,17 +682,9 @@
       '<input name="phone" value="' + esc(f.phone) + '" placeholder="' + esc(t().coPhonePh) + '" inputmode="tel" dir="ltr" style="text-align:' + (isAr() ? 'right' : 'left') + '">' +
       (er.phone ? '<span class="err">' + esc(er.phone) + '</span>' : '') +
       '</div>' +
-      '<div class="form-field ' + (er.city ? 'invalid' : '') + '">' +
-      '<label>' + esc(t().coCity) + ' *</label>' +
-      '<input name="city" value="' + esc(f.city) + '" placeholder="' + esc(t().coCityPh) + '" list="lb-cities">' +
-      '<datalist id="lb-cities">' + LB_CITIES.map(function (c) { return '<option value="' + esc(c) + '"></option>'; }).join('') + '</datalist>' +
-      (er.city ? '<span class="err">' + esc(er.city) + '</span>' : '') +
-      '</div></div>' +
-      '<div class="form-field ' + (er.area ? 'invalid' : '') + '">' +
-      '<label>' + esc(t().coArea) + ' *</label>' +
-      '<input name="area" value="' + esc(f.area) + '" placeholder="' + esc(t().coAreaPh) + '">' +
-      (er.area ? '<span class="err">' + esc(er.area) + '</span>' : '') +
+      cityFieldHtml() +
       '</div>' +
+      '<div id="co-area-wrap">' + areaFieldHtml() + '</div>' +
       '<div class="form-field ' + (er.address ? 'invalid' : '') + '">' +
       '<label>' + esc(t().coAddress) + ' *</label>' +
       '<textarea name="address" rows="2" placeholder="' + esc(t().coAddressPh) + '">' + esc(f.address) + '</textarea>' +
@@ -663,20 +726,58 @@
       '</div></div></div></div>';
   }
 
+  /* يعيد بناء حقل المنطقة فقط (بدون إعادة رسم النموذج كاملاً) */
+  function refreshAreaField(focus) {
+    var wrap = $('#co-area-wrap');
+    if (!wrap) return;
+    wrap.innerHTML = areaFieldHtml();
+    if (focus) {
+      var sel = $('#co-area');
+      if (sel && !sel.disabled) sel.focus();
+    }
+  }
+
+  function clearFieldError(el) {
+    var k = el.name;
+    if (k) state.errors[k] = undefined;
+    var field = el.closest ? el.closest('.form-field') : null;
+    if (field) {
+      field.classList.remove('invalid');
+      var err = field.querySelector('.err');
+      if (err) err.remove();
+    }
+  }
+
   function bindCheckoutForm() {
     var form = $('#co-form');
     if (!form) return;
+
+    form.addEventListener('change', function (e) {
+      var k = e.target.name;
+      if (k !== 'city' && k !== 'area') return;
+      state.form[k] = e.target.value;
+      clearFieldError(e.target);
+      if (k === 'city') {
+        // كل مدينة تعرض مناطقها — نصفّر المنطقة السابقة
+        state.form.area = '';
+        state.form.areaOther = '';
+        state.errors.area = undefined;
+        refreshAreaField(true);
+      } else if (k === 'area') {
+        if (e.target.value !== AREA_OTHER) state.form.areaOther = '';
+        refreshAreaField(false);
+        var other = $('.area-other');
+        if (other) other.focus();
+      }
+    });
+
     form.addEventListener('input', function (e) {
       var k = e.target.name;
-      if (!k) return;
+      if (!k || e.target.tagName === 'SELECT') return;
       state.form[k] = e.target.value;
+      if (k === 'areaOther') state.errors.area = undefined;
       state.errors[k] = undefined;
-      var field = e.target.closest('.form-field');
-      if (field) {
-        field.classList.remove('invalid');
-        var err = field.querySelector('.err');
-        if (err) err.remove();
-      }
+      clearFieldError(e.target);
     });
     form.addEventListener('submit', function (e) {
       e.preventDefault();
@@ -688,8 +789,8 @@
     var er = {};
     if (state.form.name.trim().length < 3) er.name = t().errName;
     if (state.form.phone.replace(/\D/g, '').length < 8) er.phone = t().errPhone;
-    if (!state.form.city.trim()) er.city = t().errCity;
-    if (!state.form.area.trim()) er.area = t().errArea;
+    if (!state.form.city) er.city = t().errCity;
+    if (!areaValue()) er.area = t().errArea;
     if (state.form.address.trim().length < 5) er.address = t().errAddress;
     state.errors = er;
     if (Object.keys(er).length) { renderModal(); return; }
@@ -712,7 +813,7 @@
     renderModal();
     setTimeout(function () {
       state.sent = null;
-      state.form = { name: '', phone: '', city: '', area: '', address: '', notes: '' };
+      state.form = { name: '', phone: '', city: '', area: '', areaOther: '', address: '', notes: '' };
       state.errors = {};
     }, 350);
   }

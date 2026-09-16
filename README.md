@@ -46,13 +46,21 @@ assets/         ← الصور، الخطوط، الشعار
 
 صور المنتجات توضع في **`assets/images/`**.
 
-## استبدال الشعار
+## الشعار
 
-الشعار الحالي رسم SVG في `index.html` (بحث عن `brand-logo`). لوضع شعارك: ضع ملفك في `assets/images/logo.png` واستبدل كتلة `<svg class="brand-logo">…</svg>` بـ:
+الشعار الرسمي مستخدم في الهيدر والفوتر والأيقونة المفضّلة (favicon):
 
-```html
-<img src="assets/images/logo.png" alt="Diamond Perfume" class="brand-logo" />
 ```
+assets/images/logo.png       ← الشعار الأصلي الكامل (1024×1024)
+assets/images/logo-icon.png  ← الماسة فقط — في الهيدر والفوتر وقائمة الجوال
+assets/images/favicon.png    ← أيقونة التبويب
+```
+
+لتحديث الشعار: استبدل `logo.png` ثم أعد توليد `logo-icon.png` و`favicon.png` بالمقاسات نفسها (512×512 و64×64).
+
+## مناطق التوصيل
+
+في **`js/data.js`** ضمن `CITIES`: كل مدينة/قضاء له `areas` خاصة به. في صفحة إتمام الطلب تظهر قائمة «المنطقة» تلقائياً حسب المدينة المختارة، مع خيار «منطقة أخرى…» للكتابة اليدوية.
 
 ## الخط العربي
 
