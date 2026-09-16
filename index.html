@@ -2,21 +2,394 @@
 <html lang="ar" dir="rtl" data-lang="ar">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Diamond Perfume | عطور الماس — فردان، بيروت</title>
-    <meta name="description" content="Diamond Perfume — عطور فاخرة في قلب فردان، بيروت. عطور عالمية، شرقية، ونيش. توصيل لكل لبنان. Luxury perfumes in Verdun, Beirut. Delivery across Lebanon." />
+    <meta
+      name="description"
+      content="Diamond Perfume — عطور فاخرة في قلب فردان، بيروت. عطور عالمية، شرقية، ونيش. توصيل لكل لبنان. Luxury perfumes in Verdun, Beirut. Delivery across Lebanon."
+    />
     <meta property="og:title" content="Diamond Perfume | عطور الماس" />
     <meta property="og:description" content="عطور فاخرة أصلية 100% — فردان، بيروت. توصيل لجميع المناطق اللبنانية." />
-    <meta property="og:image" content="/images/hero.jpg" />
-    <link rel="preload" href="/fonts/thmanyahsans-Regular.otf" as="font" type="font/otf" crossorigin />
-    <link rel="preload" href="/fonts/thmanyahsans-Bold.otf" as="font" type="font/otf" crossorigin />
+    <meta property="og:image" content="assets/images/hero.jpg" />
+    <link rel="preload" href="assets/fonts/thmanyahsans-Regular.otf" as="font" type="font/otf" crossorigin />
+    <link rel="preload" href="assets/fonts/thmanyahsans-Bold.otf" as="font" type="font/otf" crossorigin />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Jost:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Jost:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <!-- ══ Top announcement marquee ══ -->
+    <div class="topbar" id="topbar">
+      <div class="marquee" id="marquee"></div>
+    </div>
+
+    <!-- ══ Header ══ -->
+    <header class="header">
+      <div class="container header-inner">
+        <a href="#home" class="brand">
+          <svg class="brand-logo" viewBox="0 0 64 64" aria-hidden="true">
+            <defs>
+              <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#f6e27a" />
+                <stop offset="0.5" stop-color="#d4af37" />
+                <stop offset="1" stop-color="#8a6a1f" />
+              </linearGradient>
+            </defs>
+            <path d="M32 10 L50 26 L32 56 L14 26 Z" fill="none" stroke="url(#lg)" stroke-width="3.4" stroke-linejoin="round" />
+            <path d="M14 26 H50 M32 10 L23 26 L32 56 M32 10 L41 26 L32 56" fill="none" stroke="url(#lg)" stroke-width="2.2" stroke-linejoin="round" />
+          </svg>
+          <span class="brand-name">
+            <b class="gold-text">Diamond Perfume</b>
+            <small id="brand-sub"></small>
+          </span>
+        </a>
+
+        <nav class="nav" id="nav"></nav>
+
+        <div class="header-actions">
+          <div class="pill-toggle hide-m" title="Currency">
+            <button data-curr="USD">$ USD</button>
+            <button data-curr="LBP" class="num" data-i18n="curLBP"></button>
+          </div>
+
+          <div class="pill-toggle" title="Language">
+            <button data-lang-btn="ar">عربي</button>
+            <button data-lang-btn="en">EN</button>
+          </div>
+
+          <a class="icon-btn hide-m" id="phone-link" href="tel:">
+            <span class="ic" data-icon="phone" data-size="19"></span>
+          </a>
+
+          <button class="icon-btn" id="cart-btn" aria-label="Cart">
+            <span class="ic" data-icon="cart" data-size="20"></span>
+            <span class="badge" id="cart-badge" hidden>0</span>
+          </button>
+
+          <button class="icon-btn burger" id="menu-btn" aria-label="Menu">
+            <span class="ic" data-icon="menu" data-size="20"></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- mobile menu -->
+    <div class="mobile-menu" id="mobile-menu" hidden></div>
+
+    <main>
+      <!-- ══ Hero ══ -->
+      <section class="hero" id="home">
+        <div class="hero-bg">
+          <img src="assets/images/hero.jpg" alt="" aria-hidden="true" />
+        </div>
+        <span class="sparkle" style="top: 18%; inset-inline-start: 8%; animation-delay: 0s" aria-hidden="true"></span>
+        <span class="sparkle" style="top: 30%; inset-inline-start: 46%; animation-delay: 1.2s" aria-hidden="true"></span>
+        <span class="sparkle" style="top: 62%; inset-inline-start: 12%; animation-delay: 2s" aria-hidden="true"></span>
+        <span class="sparkle" style="top: 14%; inset-inline-start: 70%; animation-delay: 0.6s" aria-hidden="true"></span>
+        <span class="sparkle" style="top: 70%; inset-inline-start: 58%; animation-delay: 1.7s" aria-hidden="true"></span>
+        <span class="sparkle" style="top: 42%; inset-inline-start: 85%; animation-delay: 2.6s" aria-hidden="true"></span>
+
+        <div class="container hero-inner">
+          <div>
+            <span class="hero-badge">
+              <span class="ic" data-icon="diamond" data-size="15"></span>
+              <span data-i18n="heroBadge"></span>
+            </span>
+            <h1 class="display hero-title">
+              <span data-i18n="heroTitleA"></span><br />
+              <span class="shimmer" data-i18n="heroTitleB"></span>
+            </h1>
+            <p class="hero-sub" data-i18n="heroSub"></p>
+            <div class="hero-ctas">
+              <a href="#shop" class="btn btn-gold" data-i18n="heroCtaShop"></a>
+              <a href="#offers" class="btn btn-ghost" data-i18n="heroCtaOffers"></a>
+            </div>
+            <div class="hero-stats">
+              <div class="hero-stat"><b class="gold-text num">+250</b><span data-i18n="heroStat1"></span></div>
+              <div class="hero-stat"><b class="gold-text num">+10K</b><span data-i18n="heroStat2"></span></div>
+              <div class="hero-stat"><b class="gold-text num">100%</b><span data-i18n="heroStat3"></span></div>
+            </div>
+          </div>
+
+          <div class="hero-visual">
+            <span class="hero-glow" aria-hidden="true"></span>
+            <img class="hero-bottle" src="assets/images/hero-bottle.jpg" alt="Diamond Perfume" />
+          </div>
+        </div>
+
+        <div class="scroll-hint" aria-hidden="true" data-i18n="scrollDown"></div>
+      </section>
+
+      <!-- ══ Trust bar ══ -->
+      <div class="trust">
+        <div class="container trust-grid" id="trust-grid"></div>
+      </div>
+
+      <!-- ══ Categories ══ -->
+      <section class="section" id="categories">
+        <div class="container">
+          <div class="head-center reveal">
+            <span class="kicker center" data-i18n="catKicker"></span>
+            <h2 class="display section-title"><span class="gold-text" data-i18n="catTitle"></span></h2>
+          </div>
+          <div class="cat-grid" id="cat-grid"></div>
+        </div>
+      </section>
+
+      <!-- ══ Shop ═ -->
+      <section class="section" id="shop">
+        <div class="container">
+          <div class="shop-head reveal">
+            <div>
+              <span class="kicker" data-i18n="shopKicker"></span>
+              <h2 class="display section-title gold-text" data-i18n="shopTitle"></h2>
+            </div>
+            <div class="filters" id="filters"></div>
+          </div>
+          <div class="prod-grid" id="prod-grid"></div>
+        </div>
+      </section>
+
+      <!-- ══ Offers ══ -->
+      <section class="section offers" id="offers">
+        <div class="container">
+          <div class="head-center reveal">
+            <span class="kicker center" data-i18n="offersKicker"></span>
+            <h2 class="display section-title"><span class="gold-text" data-i18n="offersTitle"></span></h2>
+            <p class="section-sub" data-i18n="offersSub"></p>
+          </div>
+          <div class="offer-grid" id="offer-grid"></div>
+          <div class="offer-note reveal" data-i18n="offerNote"></div>
+        </div>
+      </section>
+
+      <!-- ══ About ══ -->
+      <section class="section" id="about">
+        <div class="container about-grid">
+          <div class="about-img reveal">
+            <img src="assets/images/store.jpg" alt="Diamond Perfume — Verdun" loading="lazy" />
+            <div class="about-exp">
+              <b class="num">10+</b>
+              <span id="exp-span"></span>
+            </div>
+          </div>
+          <div class="about-text reveal reveal-d2">
+            <span class="kicker" data-i18n="aboutKicker"></span>
+            <h2 class="display section-title" id="about-title"></h2>
+            <p data-i18n="aboutP1"></p>
+            <p data-i18n="aboutP2"></p>
+            <div class="about-feats" id="about-feats"></div>
+            <div class="hours-card">
+              <span class="ic" data-icon="clock" data-size="26"></span>
+              <div>
+                <b data-i18n="hoursTitle"></b>
+                <span id="hours-line"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ Location ══ -->
+      <section class="section" id="location" style="background: var(--bg-2); border-block: 1px solid var(--line)">
+        <div class="container">
+          <div class="head-center reveal" style="margin-bottom: 3rem">
+            <span class="kicker center" data-i18n="locKicker"></span>
+            <h2 class="display section-title"><span class="gold-text" data-i18n="locTitle"></span></h2>
+          </div>
+          <div class="loc-grid">
+            <div class="loc-info reveal">
+              <div class="loc-item">
+                <span class="ic" data-icon="pin" data-size="22"></span>
+                <div>
+                  <b data-i18n="locAddress"></b>
+                  <span id="loc-address"></span>
+                  <small id="loc-landmark"></small>
+                </div>
+              </div>
+              <a class="loc-item" id="loc-phone-link" href="tel:">
+                <span class="ic" data-icon="phone" data-size="22"></span>
+                <div>
+                  <b data-i18n="locPhone"></b>
+                  <span class="num" dir="ltr" id="loc-phone"></span>
+                </div>
+              </a>
+              <div class="loc-item">
+                <span class="ic" data-icon="clock" data-size="22"></span>
+                <div>
+                  <b data-i18n="locHours"></b>
+                  <span id="loc-hours-days"></span>
+                  <small id="loc-hours-time"></small>
+                </div>
+              </div>
+              <div style="display: flex; gap: 0.8rem; flex-wrap: wrap; margin-top: 0.4rem">
+                <a class="btn btn-gold" id="maps-btn" target="_blank" rel="noreferrer">
+                  <span class="ic" data-icon="pin" data-size="17"></span>
+                  <span data-i18n="locDirections"></span>
+                </a>
+                <a class="btn btn-wa wa-link" href="#" target="_blank" rel="noreferrer">
+                  <span class="ic" data-icon="whatsapp" data-size="18"></span> WhatsApp
+                </a>
+              </div>
+            </div>
+            <div class="map-wrap reveal reveal-d2">
+              <iframe
+                id="map-iframe"
+                title="Diamond Perfume — Google Maps"
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                allowfullscreen
+              ></iframe>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ CTA banner ══ -->
+      <section class="section" id="cta">
+        <div class="container">
+          <div class="cta-banner reveal">
+            <h2 class="display" id="cta-title"></h2>
+            <p data-i18n="heroSub"></p>
+            <div class="hero-ctas">
+              <a href="#shop" class="btn btn-gold">
+                <span data-i18n="heroCtaShop"></span>
+                <span class="ic" data-icon="diamond" data-size="16"></span>
+              </a>
+              <a class="btn btn-wa wa-link" href="#" target="_blank" rel="noreferrer">
+                <span class="ic" data-icon="whatsapp" data-size="18"></span>
+                <span id="cta-phone" dir="ltr"></span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ══ Footer ══ -->
+    <footer class="footer">
+      <div class="container">
+        <div class="foot-grid">
+          <div class="foot-about">
+            <a href="#home" class="brand">
+              <svg class="brand-logo" viewBox="0 0 64 64" aria-hidden="true">
+                <defs>
+                  <linearGradient id="lg2" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#f6e27a" />
+                    <stop offset="0.5" stop-color="#d4af37" />
+                    <stop offset="1" stop-color="#8a6a1f" />
+                  </linearGradient>
+                </defs>
+                <path d="M32 10 L50 26 L32 56 L14 26 Z" fill="none" stroke="url(#lg2)" stroke-width="3.4" stroke-linejoin="round" />
+                <path d="M14 26 H50 M32 10 L23 26 L32 56 M32 10 L41 26 L32 56" fill="none" stroke="url(#lg2)" stroke-width="2.2" stroke-linejoin="round" />
+              </svg>
+              <span class="brand-name">
+                <b class="gold-text">Diamond Perfume</b>
+                <small id="brand-sub-2" class="brand-sub-2"></small>
+              </span>
+            </a>
+            <p data-i18n="footAbout"></p>
+            <div class="social-row">
+              <a id="soc-ig" target="_blank" rel="noreferrer" aria-label="Instagram">
+                <span class="ic" data-icon="instagram" data-size="17"></span>
+              </a>
+              <a id="soc-tt" target="_blank" rel="noreferrer" aria-label="TikTok">
+                <span class="ic" data-icon="tiktok" data-size="17"></span>
+              </a>
+              <a id="soc-fb" target="_blank" rel="noreferrer" aria-label="Facebook">
+                <span class="ic" data-icon="facebook" data-size="16"></span>
+              </a>
+            </div>
+          </div>
+
+          <div class="foot-col">
+            <h4 data-i18n="footLinks"></h4>
+            <ul id="foot-links"></ul>
+          </div>
+
+          <div class="foot-col">
+            <h4 data-i18n="footContact"></h4>
+            <ul class="foot-contact">
+              <li>
+                <span class="ic" data-icon="pin" data-size="16"></span>
+                <span id="foot-address"></span>
+              </li>
+              <li>
+                <span class="ic" data-icon="phone" data-size="16"></span>
+                <a href="tel:" id="foot-phone1" class="num" dir="ltr"></a>
+              </li>
+              <li>
+                <span class="ic" data-icon="whatsapp" data-size="16"></span>
+                <a href="#" id="foot-wa" class="num" dir="ltr"></a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="foot-col">
+            <h4 data-i18n="footHours"></h4>
+            <ul class="foot-contact">
+              <li>
+                <span class="ic" data-icon="clock" data-size="16"></span>
+                <span>
+                  <span id="foot-hours-days"></span>
+                  <br />
+                  <small style="color: var(--muted)" id="foot-hours-time"></small>
+                </span>
+              </li>
+            </ul>
+            <a class="btn btn-wa btn-sm wa-link" href="#" style="margin-top: 1.2rem" target="_blank" rel="noreferrer">
+              <span class="ic" data-icon="whatsapp" data-size="16"></span> WhatsApp
+            </a>
+          </div>
+        </div>
+
+        <div class="foot-bottom">
+          <span id="foot-year"></span>
+          <span><span data-i18n="footMade"></span> ✦ Beirut</span>
+        </div>
+      </div>
+    </footer>
+
+    <!-- ══ Cart drawer ══ -->
+    <div class="overlay" id="drawer-overlay" hidden></div>
+    <aside class="drawer" id="cart-drawer" role="dialog" aria-label="Cart" hidden>
+      <div class="drawer-head">
+        <h3>
+          <span class="ic" data-icon="cart" data-size="20"></span>
+          <span data-i18n="cartTitle"></span>
+          <span class="badge" id="drawer-badge" hidden>0</span>
+        </h3>
+        <button class="icon-btn" id="drawer-close" aria-label="Close">
+          <span class="ic" data-icon="close" data-size="20"></span>
+        </button>
+      </div>
+      <div class="drawer-body" id="drawer-body"></div>
+      <div class="drawer-foot" id="drawer-foot" hidden></div>
+    </aside>
+
+    <!-- ══ Modal root (quick view / checkout) ══ -->
+    <div id="modal-root"></div>
+
+    <!-- ══ Floating WhatsApp ══ -->
+    <a class="wa-float" id="wa-float" href="#" target="_blank" rel="noreferrer" aria-label="WhatsApp">
+      <span class="ic" data-icon="whatsapp" data-size="30"></span>
+      <span class="wa-tip" data-i18n="waTooltip"></span>
+    </a>
+
+    <!-- ══ Toast ══ -->
+    <div class="toast" id="toast" hidden role="status">
+      <span class="ic" data-icon="check" data-size="18"></span>
+      <span id="toast-msg"></span>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/app.js"></script>
   </body>
 </html>
