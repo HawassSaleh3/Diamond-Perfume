@@ -26,7 +26,7 @@ DP.I18N = {
     // hero
     heroBadge: 'فردان • بيروت • لبنان',
     heroTitleA: 'عطرٌ يليق',
-    heroTitleB: 'بك وبالماس',
+    heroTitleB: 'بك وبأناقتك',
     heroSub:
       'في قلب فردان، ننتقي لك أرقى العطور العالمية والشرقية والنيش — أصلية 100%، بأسعار تنافسية، وتوصيل إلى كل لبنان.',
     heroCtaShop: 'تسوّق الآن',
@@ -171,7 +171,7 @@ DP.I18N = {
     brandSub: 'Verdun • Beirut',
     heroBadge: 'Verdun • Beirut • Lebanon',
     heroTitleA: 'A fragrance',
-    heroTitleB: 'worthy of diamonds',
+    heroTitleB: 'worthy of your elegance',
     heroSub:
       'In the heart of Verdun, we hand-pick the finest designer, oriental and niche perfumes — 100% authentic, competitively priced, and delivered everywhere in Lebanon.',
     heroCtaShop: 'Shop Now',
