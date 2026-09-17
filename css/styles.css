@@ -281,7 +281,7 @@ html[data-lang='ar'] .kicker {
   color: #8ff0bb;
 }
 
-/* ── Top announcement marquee ───────────────────────────── */
+/* ── Top announcement marquee — seamless infinite ───────── */
 .topbar {
   background: linear-gradient(90deg, #12100a, #1c1608, #12100a);
   border-bottom: 1px solid var(--line);
@@ -292,32 +292,40 @@ html[data-lang='ar'] .kicker {
 .marquee {
   display: flex;
   width: max-content;
-  animation: marquee 28s linear infinite;
+  will-change: transform;
+  animation: marquee 22s linear infinite;
+}
+.marquee:hover {
+  animation-play-state: paused;
 }
 html[dir='rtl'] .marquee {
   animation-name: marquee-rtl;
 }
-.marquee span {
+.marquee-group {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+}
+.marquee-group span {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
   padding-inline: 1.6rem;
   color: var(--gold-light);
   white-space: nowrap;
+  flex-shrink: 0;
 }
 .marquee i {
   color: var(--gold);
   font-style: normal;
 }
 @keyframes marquee {
-  to {
-    transform: translateX(-50%);
-  }
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
 @keyframes marquee-rtl {
-  to {
-    transform: translateX(50%);
-  }
+  from { transform: translateX(0); }
+  to { transform: translateX(50%); }
 }
 
 /* ── Header ─────────────────────────────────────────────── */
@@ -1158,6 +1166,10 @@ html[data-lang='ar'] .price .now {
   border-radius: 22px;
   border: 1px solid var(--line);
   box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.85);
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  object-position: center;
 }
 .about-img::before {
   content: '';
@@ -1270,6 +1282,15 @@ html[data-lang='ar'] .price .now {
   border-radius: 16px;
   padding: 1.15rem 1.25rem;
   transition: all 0.3s;
+  text-align: start;
+}
+a.loc-item {
+  cursor: pointer;
+}
+a.loc-item:hover {
+  border-color: var(--line-strong);
+  background: rgba(212, 175, 55, 0.06);
+  transform: translateY(-2px);
 }
 .loc-item:hover {
   border-color: var(--line-strong);
@@ -1292,6 +1313,12 @@ html[data-lang='ar'] .price .now {
   display: block;
   color: var(--muted);
   font-size: 0.8rem;
+}
+.loc-actions {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  margin-top: 0.4rem;
 }
 .map-wrap {
   border-radius: 22px;
@@ -1429,6 +1456,10 @@ html[data-lang='ar'] .price .now {
   flex-wrap: wrap;
   color: var(--muted);
   font-size: 0.85rem;
+}
+.foot-bottom-centered {
+  justify-content: center !important;
+  text-align: center;
 }
 .foot-bottom .gold-text {
   font-weight: 600;
@@ -2232,6 +2263,64 @@ html[data-lang='ar'] .co-total-row b {
   .foot-grid {
     grid-template-columns: 1fr;
     gap: 2rem;
+    text-align: center;
+  }
+  .foot-about {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .foot-about p {
+    margin-inline: auto;
+    text-align: center;
+  }
+  .foot-about .brand {
+    justify-content: center;
+  }
+  .foot-about .social-row {
+    justify-content: center;
+  }
+  .foot-col {
+    text-align: center;
+    align-items: center;
+  }
+  .foot-col h4::after {
+    inset-inline-start: 50%;
+    transform: translateX(-50%);
+  }
+  html[dir='rtl'] .foot-col h4::after {
+    transform: translateX(50%);
+  }
+  .foot-col ul {
+    align-items: center;
+  }
+  .foot-contact li {
+    justify-content: center;
+    text-align: center;
+  }
+  .foot-wa-btn {
+    margin-inline: auto;
+  }
+  .foot-bottom,
+  .foot-bottom-centered {
+    justify-content: center !important;
+    text-align: center;
+  }
+  /* موقعنا — center buttons on mobile */
+  .loc-actions {
+    justify-content: center;
+  }
+  .loc-grid {
+    gap: 1.6rem;
+  }
+  .loc-info .btn {
+    flex: 1 1 auto;
+    min-width: 160px;
+  }
+  /* ensure about image height sensible on mobile */
+  .about-img img {
+    aspect-ratio: 4 / 3;
   }
   .co-head,
   .co-grid {

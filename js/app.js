@@ -218,7 +218,6 @@
   var NAV = [
     ['#home', 'navHome'],
     ['#shop', 'navShop'],
-    ['#offers', 'navOffers'],
     ['#about', 'navAbout'],
     ['#location', 'navLocation'],
   ];
@@ -241,8 +240,7 @@
       ? esc(parts[0]) + '… <span class="gold-text">' + esc(parts[1]) + '</span>'
       : esc(t().aboutTitle);
     $('#cta-title').innerHTML = esc(t().heroTitleA) + ' <span class="gold-text">' + esc(t().heroTitleB) + '</span>';
-    $('#foot-year').innerHTML = '© ' + new Date().getFullYear() +
-      ' <span class="gold-text">Diamond Perfume</span> — ' + esc(t().footRights);
+    $('#foot-year').innerHTML = '© 2026 <span class="gold-text">Diamond Perfume</span> — ' + esc(t().footRights);
     ['brand-sub', 'brand-sub-2'].forEach(function (id) {
       var el = document.getElementById(id);
       if (el) el.textContent = t().brandSub;
@@ -258,6 +256,7 @@
 
     // config-driven values
     $('#loc-address').textContent = C.address[state.lang];
+    var locAddrLink = document.getElementById('loc-address-link'); if (locAddrLink) locAddrLink.href = C.mapsShareUrl;
     $('#loc-phone').textContent = C.phoneDisplay;
     $('#loc-phone-link').href = C.phoneLink;
     $('#loc-hours-days').textContent = C.hours.weekdays[state.lang];
@@ -290,11 +289,16 @@
   /* ── Marquee ───────────────────────────────────────────── */
   function renderMarquee() {
     var items = [t().top1, t().top2, t().top3, t().top4];
-    var inner = items.map(function (txt) {
+    var oneSet = items.map(function (txt) {
       return '<span><i>✦</i> ' + esc(txt) + '</span>';
     }).join('');
-    $('#marquee').innerHTML =
-      '<span>' + inner + '</span>' + '<span aria-hidden="true">' + inner + '</span>';
+    // repeat 4x per group so group width >> viewport → seamless loop
+    var group = '';
+    for (var r = 0; r < 4; r++) group += oneSet;
+    var marqueeEl = $('#marquee');
+    if (!marqueeEl) return;
+    marqueeEl.innerHTML =
+      '<span class="marquee-group">' + group + '</span>' + '<span class="marquee-group" aria-hidden="true">' + group + '</span>';
   }
 
   /* ── Trust bar ─────────────────────────────────────────── */
@@ -362,7 +366,6 @@
       ['men', D.CAT_LABEL.men[state.lang]],
       ['oriental', D.CAT_LABEL.oriental[state.lang]],
       ['niche', D.CAT_LABEL.niche[state.lang]],
-      ['offers', t().filterOffers],
     ];
     $('#filters').innerHTML = filters.map(function (f) {
       return '<button class="chip ' + (state.activeFilter === f[0] ? 'active' : '') +
@@ -379,8 +382,7 @@
 
   function filteredList() {
     var l = D.PRODUCTS.slice();
-    if (state.activeFilter === 'offers') l = l.filter(function (p) { return p.oldPrice; });
-    else if (state.activeFilter !== 'all') l = l.filter(function (p) { return p.cat === state.activeFilter; });
+    if (state.activeFilter !== 'all') l = l.filter(function (p) { return p.cat === state.activeFilter; });
     var q = state.search.trim().toLowerCase();
     if (q) l = l.filter(function (p) {
       return (p.nameAr + p.nameEn + p.notesAr + p.notesEn).toLowerCase().indexOf(q) !== -1;
@@ -404,8 +406,10 @@
 
   /* ── Offers ────────────────────────────────────────────── */
   function renderOffers() {
+    var grid = document.getElementById('offer-grid');
+    if (!grid) return;
     var offers = D.PRODUCTS.filter(function (p) { return p.oldPrice; });
-    $('#offer-grid').innerHTML = offers.map(function (p, i) {
+    grid.innerHTML = offers.map(function (p, i) {
       return '<div class="offer-card reveal reveal-d' + (i + 1) + '">' +
         '<div class="offer-media">' +
         '<img src="' + p.image + '" alt="' + esc(name(p)) + '" loading="lazy">' +
@@ -864,7 +868,6 @@
       b.classList.toggle('active', b.getAttribute('data-curr') === c);
     });
     renderProducts();
-    renderOffers();
     renderCart();
     renderModal();
   }
@@ -878,7 +881,6 @@
     renderCategories();
     renderFilters();
     renderProducts();
-    renderOffers();
     renderAboutFeats();
     renderCart();
     renderModal();
