@@ -40,6 +40,8 @@ DP.DATA = {
     },
   ],
 
+  /* كل عطر متوفّر بحجمين: 50 ml و 100 ml — والحجم الأخير في القائمة هو المعروض افتراضياً
+     عدّل أي سعر مباشرة من sizes */
   PRODUCTS: [
     {
       id: 'royal-oud',
@@ -51,11 +53,10 @@ DP.DATA = {
       notesEn: 'Indian oud, saffron, grey amber',
       descAr: 'افتتاحية من الزعفران الذهبي تذوب في قلب من العود الهندي الفاخر، لتستقر على عنبرٍ دافئ يرافقك طوال اليوم.',
       descEn: 'A golden saffron opening melting into precious Indian oud, resting on warm amber that lasts all day.',
-      size: '100 ml',
-      price: 65,
-      oldPrice: null,
-      bestSeller: true,
-      rating: 4.9,
+      sizes: [
+        { label: '50 ml', price: 39 },
+        { label: '100 ml', price: 65 },
+      ],
       image: 'assets/images/royal-oud.jpg',
     },
     {
@@ -68,11 +69,10 @@ DP.DATA = {
       notesEn: 'Bergamot, leather, smoked vetiver',
       descAr: 'عطر الليل والحضور الطاغي؛ برغموت حاد يعانق الجلد الفاخر ودخان الفيتيفر الغامض.',
       descEn: 'The scent of night and command; sharp bergamot embracing fine leather and mysterious smoked vetiver.',
-      size: '100 ml',
-      price: 55,
-      oldPrice: null,
-      bestSeller: true,
-      rating: 4.8,
+      sizes: [
+        { label: '50 ml', price: 33 },
+        { label: '100 ml', price: 55 },
+      ],
       image: 'assets/images/diamond-noir.jpg',
     },
     {
@@ -85,11 +85,10 @@ DP.DATA = {
       notesEn: 'Damask rose, vanilla, white musk',
       descAr: 'وردة دمشقية قطفت عند الفجر، تتوسطها حلاوة الفانيليا ونقاء المسك الأبيض.',
       descEn: 'A Damask rose picked at dawn, wrapped in vanilla sweetness and pure white musk.',
-      size: '100 ml',
-      price: 48,
-      oldPrice: null,
-      bestSeller: true,
-      rating: 4.9,
+      sizes: [
+        { label: '50 ml', price: 29 },
+        { label: '100 ml', price: 48 },
+      ],
       image: 'assets/images/rose-verdun.jpg',
     },
     {
@@ -102,11 +101,10 @@ DP.DATA = {
       notesEn: 'Amber, patchouli, sandalwood',
       descAr: 'تركيبة سلطانية دافئة تجمع العنبر الملكي مع عمق الباتشولي ونعومة الصندل.',
       descEn: 'A warm royal composition of amber, deep patchouli and silky sandalwood.',
-      size: '100 ml',
-      price: 58,
-      oldPrice: 72,
-      bestSeller: false,
-      rating: 4.7,
+      sizes: [
+        { label: '50 ml', price: 35 },
+        { label: '100 ml', price: 58 },
+      ],
       image: 'assets/images/sultan-amber.jpg',
     },
     {
@@ -119,11 +117,10 @@ DP.DATA = {
       notesEn: 'White musk, cotton flower, jasmine',
       descAr: 'نقاء الطهارة في زجاجة؛ مسك أبيض ناعم يعانق زهرة القطن ولمسة ياسمين.',
       descEn: 'Purity in a bottle; soft white musk embracing cotton flower with a touch of jasmine.',
-      size: '50 ml',
-      price: 22,
-      oldPrice: null,
-      bestSeller: false,
-      rating: 4.8,
+      sizes: [
+        { label: '50 ml', price: 22 },
+        { label: '100 ml', price: 37 },
+      ],
       image: 'assets/images/pure-musk.jpg',
     },
     {
@@ -136,11 +133,10 @@ DP.DATA = {
       notesEn: 'Lavender, tonka bean, cedarwood',
       descAr: 'ليلٌ أزرق عميق؛ لافندر هادئ يتلألأ فوق تونكا كريمية وقاعدة من أرز الأطلس.',
       descEn: 'A deep blue night; calm lavender sparkling over creamy tonka and Atlas cedar.',
-      size: '100 ml',
-      price: 74,
-      oldPrice: null,
-      bestSeller: true,
-      rating: 5.0,
+      sizes: [
+        { label: '50 ml', price: 44 },
+        { label: '100 ml', price: 74 },
+      ],
       image: 'assets/images/sapphire-nuit.jpg',
     },
     {
@@ -153,11 +149,10 @@ DP.DATA = {
       notesEn: 'Madagascar vanilla, caramel, tonka',
       descAr: 'حلوى ملكية لا تُقاوم؛ فانيليا مدغشقرية كريمية مع خيوط الكراميل الذهبية.',
       descEn: 'An irresistible royal gourmand; creamy Madagascar vanilla laced with golden caramel.',
-      size: '100 ml',
-      price: 62,
-      oldPrice: null,
-      bestSeller: true,
-      rating: 4.9,
+      sizes: [
+        { label: '50 ml', price: 37 },
+        { label: '100 ml', price: 62 },
+      ],
       image: 'assets/images/vanilla-royale.jpg',
     },
     {
@@ -170,11 +165,10 @@ DP.DATA = {
       notesEn: 'Saffron, Italian leather, tobacco',
       descAr: 'جرأة الزعفران وفخامة الجلد الإيطالي في عناقٍ دافئ مع أوراق التبغ المعتّقة.',
       descEn: 'Bold saffron and luxurious Italian leather warmed by aged tobacco leaves.',
-      size: '100 ml',
-      price: 88,
-      oldPrice: 110,
-      bestSeller: false,
-      rating: 4.8,
+      sizes: [
+        { label: '50 ml', price: 53 },
+        { label: '100 ml', price: 88 },
+      ],
       image: 'assets/images/saffron-leather.jpg',
     },
     {
@@ -187,11 +181,10 @@ DP.DATA = {
       notesEn: 'Bergamot, cardamom, green vetiver',
       descAr: 'نسيم أخضر يعبر الصحراء؛ هيل منعش وبرغموت مشرق فوق فيتيفر أخضر نابض.',
       descEn: 'A green breeze crossing the desert; fresh cardamom and bright bergamot over vivid vetiver.',
-      size: '100 ml',
-      price: 79,
-      oldPrice: null,
-      bestSeller: false,
-      rating: 4.7,
+      sizes: [
+        { label: '50 ml', price: 47 },
+        { label: '100 ml', price: 79 },
+      ],
       image: 'assets/images/desert-emerald.jpg',
     },
     {
@@ -204,11 +197,10 @@ DP.DATA = {
       notesEn: 'Pure 12-year-aged Cambodian oud',
       descAr: 'دهن عود كمبودي نقي معتّق اثنتي عشرة سنة؛ قطرة واحدة تكفي لحضورٍ يسبق اسمك.',
       descEn: 'Pure Cambodian oud oil aged twelve years; one drop precedes your name.',
-      size: '12 ml',
-      price: 120,
-      oldPrice: null,
-      bestSeller: true,
-      rating: 5.0,
+      sizes: [
+        { label: '50 ml', price: 72 },
+        { label: '100 ml', price: 120 },
+      ],
       image: 'assets/images/cambodian-oud.jpg',
     },
     {
@@ -221,11 +213,10 @@ DP.DATA = {
       notesEn: 'Scented oud chips, musk, sandalwood',
       descAr: 'بخور فاخر يملأ المجلس بعبق الضيافة العربية الأصيلة.',
       descEn: 'Luxurious bakhoor that fills your majlis with authentic Arabian hospitality.',
-      size: '80 g',
-      price: 35,
-      oldPrice: 45,
-      bestSeller: false,
-      rating: 4.6,
+      sizes: [
+        { label: '50 ml', price: 21 },
+        { label: '100 ml', price: 35 },
+      ],
       image: 'assets/images/diamond-bakhoor.jpg',
     },
     {
@@ -238,11 +229,10 @@ DP.DATA = {
       notesEn: 'Jasmine, orange blossom, golden musk',
       descAr: 'ذهبٌ سائل يفيض أنوثة؛ ياسمين ليلي يتشابك مع زهر البرتقال ومسكٍ ذهبي دافئ.',
       descEn: 'Liquid gold overflowing with femininity; night jasmine entwined with orange blossom and warm golden musk.',
-      size: '100 ml',
-      price: 57,
-      oldPrice: null,
-      bestSeller: true,
-      rating: 4.9,
+      sizes: [
+        { label: '50 ml', price: 34 },
+        { label: '100 ml', price: 57 },
+      ],
       image: 'assets/images/or-eternel.jpg',
     },
   ],

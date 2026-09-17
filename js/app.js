@@ -21,6 +21,7 @@
     lang: localStorage.getItem('dp-lang') || 'ar',
     curr: localStorage.getItem('dp-curr') || 'USD',
     cart: loadJSON('dp-cart') || [],
+    sizeSel: {}, // الحجم المختار لكل منتج (فهرس داخل sizes)
     activeFilter: 'all',
     search: '',
     quickView: null, // product
@@ -57,9 +58,19 @@
   function fmtBoth(usd) {
     return '$' + Number(usd).toLocaleString('en-US') + ' (' + lbpOf(usd) + ')';
   }
-  function discountPct(p) {
-    return p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : 0;
+
+  /* ── Sizes (50 ml / 100 ml) ────────────────────────────── */
+  /* كل منتج إله مصفوفة sizes — آخر حجم في المصفوفة هو المختار افتراضياً */
+  function sizesOf(p) {
+    return (p.sizes && p.sizes.length) ? p.sizes : [{ label: '', price: 0 }];
   }
+  function defaultSizeIdx(p) { return sizesOf(p).length - 1; }
+  function selIdx(p) {
+    var i = state.sizeSel[p.id];
+    if (i == null || i < 0 || i >= sizesOf(p).length) i = defaultSizeIdx(p);
+    return i;
+  }
+  function selSize(p) { return sizesOf(p)[selIdx(p)]; }
 
   /* ── Icons (inline SVG) ────────────────────────────────── */
   var I = {
@@ -105,9 +116,6 @@
     cash: function (s) {
       return '<svg width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 12h.01M18 12h.01"/></svg>';
     },
-    star: function (s) {
-      return '<svg width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"/></svg>';
-    },
     search: function (s) {
       return '<svg width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>';
     },
@@ -144,31 +152,66 @@
   function cartCount() { return state.cart.reduce(function (s, i) { return s + i.qty; }, 0); }
   function cartTotal() { return state.cart.reduce(function (s, i) { return s + i.qty * i.price; }, 0); }
 
-  function addToCart(p, qty) {
+  /* مفتاح السطر في السلة = المنتج + الحجم (كل حجم سطر مستقل) */
+  function itemKey(id, sizeLabel) { return id + '|' + sizeLabel; }
+
+  /* سعر محدّث من data.js (حتى لو تغيّرت الأسعار بعد إضافة المنتج للسلة) */
+  function freshPrice(id, sizeLabel, fallback) {
+    var p = byId(id);
+    if (!p) return fallback;
+    var list = sizesOf(p);
+    for (var k = 0; k < list.length; k++) if (list[k].label === sizeLabel) return list[k].price;
+    return fallback;
+  }
+
+  function addToCart(p, sizeIdx, qty) {
     qty = qty || 1;
-    var ex = state.cart.filter(function (i) { return i.id === p.id; })[0];
-    if (ex) ex.qty += qty;
+    var s = sizesOf(p)[sizeIdx == null ? selIdx(p) : sizeIdx];
+    var key = itemKey(p.id, s.label);
+    var ex = state.cart.filter(function (i) { return i.key === key; })[0];
+    if (ex) { ex.qty += qty; ex.price = freshPrice(p.id, ex.size, ex.price); }
     else state.cart.push({
-      id: p.id, price: p.price, oldPrice: p.oldPrice, size: p.size,
+      key: key, id: p.id, price: s.price, size: s.label,
       image: p.image, nameAr: p.nameAr, nameEn: p.nameEn, qty: qty,
     });
     saveCart();
     renderCart();
     renderModal(); // refresh summary if checkout is open
   }
-  function setQty(id, qty) {
+  function setQty(key, qty) {
     state.cart = qty <= 0
-      ? state.cart.filter(function (i) { return i.id !== id; })
-      : state.cart.map(function (i) { return i.id === id ? { id: i.id, price: i.price, oldPrice: i.oldPrice, size: i.size, image: i.image, nameAr: i.nameAr, nameEn: i.nameEn, qty: qty } : i; });
+      ? state.cart.filter(function (i) { return i.key !== key; })
+      : state.cart.map(function (i) { return i.key === key ? {
+          key: i.key, id: i.id, price: i.price, size: i.size,
+          image: i.image, nameAr: i.nameAr, nameEn: i.nameEn, qty: qty,
+        } : i; });
     saveCart();
     renderCart();
     renderModal();
   }
-  function removeItem(id) {
-    state.cart = state.cart.filter(function (i) { return i.id !== id; });
+  function removeItem(key) {
+    state.cart = state.cart.filter(function (i) { return i.key !== key; });
     saveCart();
     renderCart();
     renderModal();
+  }
+
+  /* ترحيل سلة قديمة (قبل إضافة الأحجام) — تُحدَّث الأسعار من data.js */
+  function normalizeCart() {
+    state.cart = (state.cart || []).map(function (i) {
+      var p = byId(i.id);
+      if (!p) return null;
+      var list = sizesOf(p);
+      var s = null;
+      for (var k = 0; k < list.length; k++) if (list[k].label === i.size) s = list[k];
+      if (!s) s = list[defaultSizeIdx(p)];
+      return {
+        key: itemKey(p.id, s.label), id: p.id, price: s.price, size: s.label,
+        image: p.image, nameAr: p.nameAr, nameEn: p.nameEn,
+        qty: Math.max(1, Number(i.qty) || 1),
+      };
+    }).filter(function (i) { return !!i; });
+    saveCart();
   }
   function clearCart() {
     state.cart = [];
@@ -252,7 +295,6 @@
     $('#phone-link').title = t().callUs;
     $('#drawer-close').setAttribute('aria-label', t().close);
     $('#cart-drawer').setAttribute('aria-label', t().cartTitle);
-    $('#topbar').dir = isAr() ? 'rtl' : 'ltr';
 
     // config-driven values
     $('#loc-address').textContent = C.address[state.lang];
@@ -286,28 +328,13 @@
     $('#nav').innerHTML = navHtml();
   }
 
-  /* ── Marquee ───────────────────────────────────────────── */
-  function renderMarquee() {
-    var items = [t().top1, t().top2, t().top3, t().top4];
-    var oneSet = items.map(function (txt) {
-      return '<span><i>✦</i> ' + esc(txt) + '</span>';
-    }).join('');
-    // repeat 4x per group so group width >> viewport → seamless loop
-    var group = '';
-    for (var r = 0; r < 4; r++) group += oneSet;
-    var marqueeEl = $('#marquee');
-    if (!marqueeEl) return;
-    marqueeEl.innerHTML =
-      '<span class="marquee-group">' + group + '</span>' + '<span class="marquee-group" aria-hidden="true">' + group + '</span>';
-  }
-
   /* ── Trust bar ─────────────────────────────────────────── */
   function renderTrust() {
     var items = [
-      ['truck', t().top1, t().aboutFeat2D],
+      ['truck', t().aboutFeat2T, t().aboutFeat2D],
       ['shield', t().aboutFeat1T, t().aboutFeat1D],
       ['tag', t().aboutFeat3T, t().aboutFeat3D],
-      ['cash', t().top3, t().coDeliveryInfo],
+      ['cash', t().trustCodT, t().trustCodD],
     ];
     $('#trust-grid').innerHTML = items.map(function (it, i) {
       return '<div class="trust-item reveal reveal-d' + (i + 1) + '">' + I[it[0]](26) +
@@ -330,29 +357,47 @@
 
   /* ── Products ──────────────────────────────────────────── */
   function priceHtml(p) {
-    return '<div class="price"><span class="now">' + fmt(p.price) + '</span>' +
-      (p.oldPrice ? '<span class="was">' + fmt(p.oldPrice) + '</span>' : '') + '</div>';
+    return '<div class="price" data-price-pid="' + p.id + '"><span class="now">' + fmt(selSize(p).price) + '</span></div>';
+  }
+
+  /* أزرار اختيار الحجم (50 ml / 100 ml) */
+  function sizePickerHtml(p, withLabel) {
+    var list = sizesOf(p), cur = selIdx(p);
+    return '<div class="size-row">' +
+      (withLabel ? '<span class="size-row-label">' + esc(t().sizeLabel) + '</span>' : '') +
+      '<div class="size-pick">' +
+      list.map(function (s, i) {
+        return '<button type="button" class="size-pill' + (i === cur ? ' active' : '') +
+          '" data-size-pid="' + p.id + '" data-size-idx="' + i + '" aria-pressed="' + (i === cur) + '">' +
+          esc(s.label) + '</button>';
+      }).join('') +
+      '</div></div>';
+  }
+
+  /* تحديث الأسعار والأزرار عند تبديل الحجم (بدون إعادة رسم الكل) */
+  function syncSize(p) {
+    var idx = selIdx(p), s = sizesOf(p)[idx];
+    $$('[data-size-pid="' + p.id + '"]').forEach(function (b) {
+      var on = Number(b.getAttribute('data-size-idx')) === idx;
+      b.classList.toggle('active', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    $$('[data-price-pid="' + p.id + '"]').forEach(function (el) {
+      el.innerHTML = '<span class="now">' + fmt(s.price) + '</span>';
+    });
   }
 
   function productCard(p, i) {
-    var pct = discountPct(p);
     return '<div class="prod-card reveal reveal-d' + ((i % 4) + 1) + '">' +
       '<div class="prod-media" data-qv="' + p.id + '" role="button" tabindex="0">' +
       '<img src="' + p.image + '" alt="' + esc(name(p)) + '" loading="lazy">' +
-      '<div class="prod-badges">' +
-      (p.bestSeller ? '<span class="tag tag-gold">★ ' + esc(t().bestSeller) + '</span>' : '') +
-      (pct > 0 ? '<span class="tag tag-red">-' + pct + '%</span>' : '') +
-      '</div>' +
       '<span class="quick-view">' + esc(t().quickView) + '</span>' +
       '</div>' +
       '<div class="prod-body">' +
       '<span class="prod-cat">' + esc(D.CAT_LABEL[p.cat][state.lang]) + '</span>' +
       '<h3 class="prod-name">' + esc(name(p)) + '</h3>' +
       '<p class="prod-notes">' + esc(p[state.lang === 'ar' ? 'notesAr' : 'notesEn']) + '</p>' +
-      '<div class="prod-meta">' +
-      '<span class="stars">' + I.star(13) + ' <span class="num">' + p.rating + '</span></span>' +
-      '<span>•</span><span class="num">' + esc(p.size) + '</span>' +
-      '</div>' +
+      sizePickerHtml(p, false) +
       '<div class="prod-foot">' +
       priceHtml(p) +
       '<button class="add-btn" data-add="' + p.id + '">' + I.cart(16) + ' ' + esc(t().addToCart) + '</button>' +
@@ -402,27 +447,6 @@
     $$('#filters .chip').forEach(function (c) {
       c.classList.toggle('active', c.getAttribute('data-filter') === state.activeFilter);
     });
-  }
-
-  /* ── Offers ────────────────────────────────────────────── */
-  function renderOffers() {
-    var grid = document.getElementById('offer-grid');
-    if (!grid) return;
-    var offers = D.PRODUCTS.filter(function (p) { return p.oldPrice; });
-    grid.innerHTML = offers.map(function (p, i) {
-      return '<div class="offer-card reveal reveal-d' + (i + 1) + '">' +
-        '<div class="offer-media">' +
-        '<img src="' + p.image + '" alt="' + esc(name(p)) + '" loading="lazy">' +
-        '<span class="offer-off">-' + discountPct(p) + '%</span>' +
-        '</div>' +
-        '<div class="offer-body">' +
-        '<h3>' + esc(name(p)) + '</h3>' +
-        '<p class="notes">' + esc(p[state.lang === 'ar' ? 'notesAr' : 'notesEn']) + '</p>' +
-        '<div class="offer-foot">' +
-        priceHtml(p) +
-        '<button class="btn btn-gold btn-sm" data-offer-cta="' + p.id + '">' + esc(t().offerCta) + '</button>' +
-        '</div></div></div>';
-    }).join('');
   }
 
   /* ── About features ────────────────────────────────────── */
@@ -504,12 +528,12 @@
         '<div class="ci-name">' + esc(name(i)) + '</div>' +
         '<div class="ci-size num">' + esc(i.size) + '</div>' +
         '<div class="qty-ctrl">' +
-        '<button data-qty-id="' + i.id + '" data-qty-delta="1" aria-label="+">+</button>' +
+        '<button data-qty-key="' + esc(i.key) + '" data-qty-delta="1" aria-label="+">+</button>' +
         '<span>' + i.qty + '</span>' +
-        '<button data-qty-id="' + i.id + '" data-qty-delta="-1" aria-label="−">−</button>' +
+        '<button data-qty-key="' + esc(i.key) + '" data-qty-delta="-1" aria-label="−">−</button>' +
         '</div></div>' +
         '<div class="ci-side">' +
-        '<button class="ci-remove" data-remove="' + i.id + '" aria-label="remove">' + I.trash(17) + '</button>' +
+        '<button class="ci-remove" data-remove="' + esc(i.key) + '" aria-label="remove">' + I.trash(17) + '</button>' +
         '<span class="ci-price">' + fmt(i.price * i.qty) + '</span>' +
         '</div></div>';
     }).join('') + '<button class="link-btn" id="cart-clear">' + esc(t().cartClear) + '</button>';
@@ -524,7 +548,6 @@
 
   /* ── Quick view / Checkout modal ───────────────────────── */
   function quickViewHtml(p) {
-    var pct = discountPct(p);
     return '<div class="modal" id="qv-modal">' +
       '<div class="modal-box" style="width:min(820px, 100%); overflow:hidden">' +
       '<button class="icon-btn modal-close" data-close-modal aria-label="' + esc(t().close) + '">' + I.close(20) + '</button>' +
@@ -534,20 +557,16 @@
       '<span class="prod-cat">' + esc(D.CAT_LABEL[p.cat][state.lang]) + '</span>' +
       '<h3 class="display">' + esc(name(p)) + '</h3>' +
       '<div class="prod-meta" style="margin-bottom:0">' +
-      '<span class="stars">' + I.star(14) + ' <span class="num">' + p.rating + '</span></span>' +
-      '<span>' + esc(t().ratingOf) + '</span><span>•</span>' +
       '<span>' + esc(p.gender[state.lang]) + '</span>' +
       '</div>' +
       '<p class="qv-desc">' + esc(p[state.lang === 'ar' ? 'descAr' : 'descEn']) + '</p>' +
       '<div class="qv-rows">' +
       '<div class="qv-row"><span>' + esc(t().notesLabel) + '</span><span>' + esc(p[state.lang === 'ar' ? 'notesAr' : 'notesEn']) + '</span></div>' +
-      '<div class="qv-row"><span>' + esc(t().sizeLabel) + '</span><span class="num">' + esc(p.size) + '</span></div>' +
       '<div class="qv-row"><span>' + esc(t().catLabel) + '</span><span>' + esc(D.CAT_LABEL[p.cat][state.lang]) + '</span></div>' +
       '</div>' +
+      sizePickerHtml(p, true) +
       '<div class="qv-foot">' +
-      '<div class="price"><span class="now gold-text">' + fmt(p.price) + '</span>' +
-      (p.oldPrice ? '<span class="was">' + fmt(p.oldPrice) + ' — ' + pct + '% ' + esc(t().off) + '</span>' : '') +
-      '</div>' +
+      '<div class="price" data-price-pid="' + p.id + '"><span class="now gold-text">' + fmt(selSize(p).price) + '</span></div>' +
       '<button class="add-btn btn" data-add="' + p.id + '">' + I.cart(16) + ' ' + esc(t().addToCart) + '</button>' +
       '</div></div></div></div></div>';
   }
@@ -883,7 +902,6 @@
   function renderAll() {
     applyStaticText();
     fillIcons(document);
-    renderMarquee();
     renderTrust();
     renderCategories();
     renderFilters();
@@ -908,15 +926,16 @@
     if ((el = e.target.closest('[data-add]'))) {
       var p = byId(el.getAttribute('data-add'));
       if (p) {
+        var sz = selSize(p);
         addToCart(p);
-        showToast(p.nameAr + ' — ' + t().added);
+        showToast(name(p) + ' — ' + sz.label + ' — ' + t().added);
         flashAdd(el);
       }
       return;
     }
-    if ((el = e.target.closest('[data-offer-cta]'))) {
-      var op = byId(el.getAttribute('data-offer-cta'));
-      if (op) { addToCart(op); openDrawer(); }
+    if ((el = e.target.closest('[data-size-pid]'))) {
+      var sp = byId(el.getAttribute('data-size-pid'));
+      if (sp) { state.sizeSel[sp.id] = Number(el.getAttribute('data-size-idx')); syncSize(sp); }
       return;
     }
     if ((el = e.target.closest('[data-filter]'))) {
@@ -941,9 +960,9 @@
       return;
     }
     if ((el = e.target.closest('[data-qty-delta]'))) {
-      var id = el.getAttribute('data-qty-id');
-      var item = state.cart.filter(function (i) { return i.id === id; })[0];
-      if (item) setQty(item.id, item.qty + Number(el.getAttribute('data-qty-delta')));
+      var key = el.getAttribute('data-qty-key');
+      var item = state.cart.filter(function (i) { return i.key === key; })[0];
+      if (item) setQty(item.key, item.qty + Number(el.getAttribute('data-qty-delta')));
       return;
     }
     if ((el = e.target.closest('[data-remove]'))) { removeItem(el.getAttribute('data-remove')); return; }
@@ -987,6 +1006,7 @@
   });
 
   /* ── Init ─────────────────────────────────────────────── */
+  normalizeCart(); // يوافق السلال القديمة مع الأسعار/الأحجام الجديدة
   document.documentElement.lang = state.lang;
   document.documentElement.dir = T[state.lang].dir;
   document.documentElement.setAttribute('data-lang', state.lang);
