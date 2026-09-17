@@ -778,7 +778,14 @@
     form.addEventListener('input', function (e) {
       var k = e.target.name;
       if (!k || e.target.tagName === 'SELECT') return;
-      state.form[k] = e.target.value;
+      // خانة الهاتف: أرقام فقط وبحد أقصى 8 أرقام (رقم لبناني)
+      if (k === 'phone') {
+        var digits = e.target.value.replace(/\D/g, '').slice(0, 8);
+        if (e.target.value !== digits) e.target.value = digits;
+        state.form.phone = digits;
+      } else {
+        state.form[k] = e.target.value;
+      }
       if (k === 'areaOther') state.errors.area = undefined;
       state.errors[k] = undefined;
       clearFieldError(e.target);
