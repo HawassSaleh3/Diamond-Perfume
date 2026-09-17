@@ -218,7 +218,6 @@
   var NAV = [
     ['#home', 'navHome'],
     ['#shop', 'navShop'],
-    ['#offers', 'navOffers'],
     ['#about', 'navAbout'],
     ['#location', 'navLocation'],
   ];
@@ -263,6 +262,12 @@
     $('#loc-hours-days').textContent = C.hours.weekdays[state.lang];
     $('#loc-hours-time').textContent = C.hours.time[state.lang];
     $('#maps-btn').href = C.mapsShareUrl;
+    var locLink = $('#loc-maps-link');
+    if (locLink) {
+      locLink.href = C.mapsShareUrl;
+      locLink.title = t().locOpen;
+      locLink.setAttribute('aria-label', t().locOpen);
+    }
     $('#hours-line').textContent = C.hours.weekdays[state.lang] + ' • ' + C.hours.time[state.lang];
     $('#cta-phone').textContent = C.phoneDisplay;
     $('#foot-address').textContent = C.address[state.lang];
@@ -288,14 +293,52 @@
   }
 
   /* ── Marquee ───────────────────────────────────────────── */
-  function renderMarquee() {
-    var items = [t().top1, t().top2, t().top3, t().top4];
-    var inner = items.map(function (txt) {
-      return '<span><i>✦</i> ' + esc(txt) + '</span>';
+  /* نبني مجموعة واحدة، نقيس عرضها، ثم نكرّرها بما يكفي لتغطية الشريط
+     كاملاً — فتبقى الحركة متّصلة بلا فراغات أو تقطيع */
+  function marqueeGroupHtml(items) {
+    return items.map(function (txt) {
+      return '<span class="mq-item"><i>✦</i> ' + esc(txt) + '</span>';
     }).join('');
-    $('#marquee').innerHTML =
-      '<span>' + inner + '</span>' + '<span aria-hidden="true">' + inner + '</span>';
   }
+
+  function renderMarquee() {
+    var el = $('#marquee');
+    if (!el) return;
+    var items = [t().top1, t().top2, t().top3, t().top4];
+    var group = marqueeGroupHtml(items);
+
+    // 1) قياس عرض مجموعة واحدة
+    el.style.animation = 'none';
+    el.innerHTML = '<span class="mq-group">' + group + '</span>';
+    var groupWidth = el.firstChild ? el.firstChild.getBoundingClientRect().width : 0;
+    if (!groupWidth) { // احتياط إن لم يُقَس بعد
+      el.style.animation = '';
+      el.style.removeProperty('--mq-shift');
+      el.innerHTML = '<span class="mq-group">' + group + '</span><span class="mq-group" aria-hidden="true">' + group + '</span>';
+      return;
+    }
+
+    // 2) كم نسخة تكفي لتغطية عرض الشاشة + نسخة إضافية للالتحام
+    var viewport = el.parentElement ? el.parentElement.getBoundingClientRect().width : window.innerWidth;
+    var copies = Math.max(2, Math.ceil((viewport || window.innerWidth) / groupWidth) + 1);
+    var all = '';
+    for (var i = 0; i < copies; i++) {
+      all += '<span class="mq-group"' + (i ? ' aria-hidden="true"' : '') + '>' + group + '</span>';
+    }
+    el.innerHTML = all;
+
+    // 3) الإزاحة = عرض مجموعة واحدة (px) فيكون الالتحام دقيقاً
+    var speed = 62; // px في الثانية
+    el.style.setProperty('--mq-shift', groupWidth + 'px');
+    el.style.setProperty('--mq-dur', Math.max(12, groupWidth / speed).toFixed(2) + 's');
+    el.style.animation = '';
+  }
+
+  var mqResizeTimer = null;
+  window.addEventListener('resize', function () {
+    clearTimeout(mqResizeTimer);
+    mqResizeTimer = setTimeout(renderMarquee, 250);
+  });
 
   /* ── Trust bar ─────────────────────────────────────────── */
   function renderTrust() {
@@ -362,7 +405,6 @@
       ['men', D.CAT_LABEL.men[state.lang]],
       ['oriental', D.CAT_LABEL.oriental[state.lang]],
       ['niche', D.CAT_LABEL.niche[state.lang]],
-      ['offers', t().filterOffers],
     ];
     $('#filters').innerHTML = filters.map(function (f) {
       return '<button class="chip ' + (state.activeFilter === f[0] ? 'active' : '') +
@@ -379,8 +421,7 @@
 
   function filteredList() {
     var l = D.PRODUCTS.slice();
-    if (state.activeFilter === 'offers') l = l.filter(function (p) { return p.oldPrice; });
-    else if (state.activeFilter !== 'all') l = l.filter(function (p) { return p.cat === state.activeFilter; });
+    if (state.activeFilter !== 'all') l = l.filter(function (p) { return p.cat === state.activeFilter; });
     var q = state.search.trim().toLowerCase();
     if (q) l = l.filter(function (p) {
       return (p.nameAr + p.nameEn + p.notesAr + p.notesEn).toLowerCase().indexOf(q) !== -1;
@@ -400,25 +441,6 @@
     $$('#filters .chip').forEach(function (c) {
       c.classList.toggle('active', c.getAttribute('data-filter') === state.activeFilter);
     });
-  }
-
-  /* ── Offers ────────────────────────────────────────────── */
-  function renderOffers() {
-    var offers = D.PRODUCTS.filter(function (p) { return p.oldPrice; });
-    $('#offer-grid').innerHTML = offers.map(function (p, i) {
-      return '<div class="offer-card reveal reveal-d' + (i + 1) + '">' +
-        '<div class="offer-media">' +
-        '<img src="' + p.image + '" alt="' + esc(name(p)) + '" loading="lazy">' +
-        '<span class="offer-off">-' + discountPct(p) + '%</span>' +
-        '</div>' +
-        '<div class="offer-body">' +
-        '<h3>' + esc(name(p)) + '</h3>' +
-        '<p class="notes">' + esc(p[state.lang === 'ar' ? 'notesAr' : 'notesEn']) + '</p>' +
-        '<div class="offer-foot">' +
-        priceHtml(p) +
-        '<button class="btn btn-gold btn-sm" data-offer-cta="' + p.id + '">' + esc(t().offerCta) + '</button>' +
-        '</div></div></div>';
-    }).join('');
   }
 
   /* ── About features ────────────────────────────────────── */
@@ -864,7 +886,6 @@
       b.classList.toggle('active', b.getAttribute('data-curr') === c);
     });
     renderProducts();
-    renderOffers();
     renderCart();
     renderModal();
   }
@@ -878,7 +899,6 @@
     renderCategories();
     renderFilters();
     renderProducts();
-    renderOffers();
     renderAboutFeats();
     renderCart();
     renderModal();
@@ -903,11 +923,6 @@
         showToast(p.nameAr + ' — ' + t().added);
         flashAdd(el);
       }
-      return;
-    }
-    if ((el = e.target.closest('[data-offer-cta]'))) {
-      var op = byId(el.getAttribute('data-offer-cta'));
-      if (op) { addToCart(op); openDrawer(); }
       return;
     }
     if ((el = e.target.closest('[data-filter]'))) {
@@ -982,4 +997,10 @@
   document.documentElement.dir = T[state.lang].dir;
   document.documentElement.setAttribute('data-lang', state.lang);
   renderAll();
+
+  /* بعد تحميل الخطوط قد يتغيّر عرض النص — نعيد قياس الشريط المتحرك */
+  if (document.fonts && document.fonts.ready && document.fonts.ready.then) {
+    document.fonts.ready.then(function () { renderMarquee(); });
+  }
+  window.addEventListener('load', function () { renderMarquee(); });
 })();
