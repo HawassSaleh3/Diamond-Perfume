@@ -41,7 +41,7 @@ DP.I18N = {
     catExplore: 'استكشف',
     // products
     shopKicker: 'المتجر',
-    shopTitle: 'مجموعة الماس',
+    shopTitle: 'مجموعة العطور',
     filterAll: 'الكل',
     filterOffers: 'العروض',
     searchPlaceholder: 'ابحث عن عطر…',
@@ -184,7 +184,7 @@ DP.I18N = {
     catTitle: 'Shop by taste',
     catExplore: 'Explore',
     shopKicker: 'The Shop',
-    shopTitle: 'The Diamond Collection',
+    shopTitle: 'Perfume Collection',
     filterAll: 'All',
     filterOffers: 'Offers',
     searchPlaceholder: 'Search a fragrance…',
