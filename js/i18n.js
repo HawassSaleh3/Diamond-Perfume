@@ -16,7 +16,6 @@ DP.I18N = {
     // nav
     navHome: 'الرئيسية',
     navShop: 'المتجر',
-    navOffers: 'العروض',
     navAbout: 'من نحن',
     navLocation: 'موقعنا',
     // header
@@ -30,7 +29,6 @@ DP.I18N = {
     heroSub:
       'في قلب فردان، ننتقي لك أرقى العطور العالمية والشرقية والنيش — أصلية 100%، بأسعار تنافسية، وتوصيل إلى كل لبنان.',
     heroCtaShop: 'تسوّق الآن',
-    heroCtaOffers: 'اكتشف العروض',
     heroStat1: 'عطر فاخر',
     heroStat2: 'عميل سعيد',
     heroStat3: 'أصالة مضمونة',
@@ -41,9 +39,8 @@ DP.I18N = {
     catExplore: 'استكشف',
     // products
     shopKicker: 'المتجر',
-    shopTitle: 'مجموعة الماس',
+    shopTitle: 'مجموعة العطور',
     filterAll: 'الكل',
-    filterOffers: 'العروض',
     searchPlaceholder: 'ابحث عن عطر…',
     noResults: 'لا توجد نتائج مطابقة',
     addToCart: 'أضف إلى السلة',
@@ -52,13 +49,6 @@ DP.I18N = {
     bestSeller: 'الأكثر مبيعاً',
     off: 'خصم',
     newTag: 'جديد',
-    // offers
-    offersKicker: 'لفترة محدودة',
-    offersTitle: 'عروضٌ تلمع كالماس',
-    offersSub: 'خصومات حقيقية على أرقى العطور — اطلبها قبل انتهاء العرض',
-    offerCta: 'اطلب الآن',
-    offerSave: 'وفّر',
-    offerNote: 'العروض سارية حتى نفاد الكمية — تُطبّق عند الطلب عبر الموقع',
     // about
     aboutKicker: 'قصتنا',
     aboutTitle: 'شغفٌ بالعطور… منذ اليوم الأول',
@@ -138,7 +128,6 @@ DP.I18N = {
     footHours: 'أوقات الدوام',
     footFollow: 'تابعنا',
     footRights: 'جميع الحقوق محفوظة',
-    footMade: 'صُنع بشغف في بيروت',
     // floating
     waTooltip: 'تواصل معنا واتساب',
     waMsg: 'مرحباً Diamond Perfume! لدي استفسار عن عطوركم.',
@@ -163,7 +152,6 @@ DP.I18N = {
     top4: 'Verdun — Beirut',
     navHome: 'Home',
     navShop: 'Shop',
-    navOffers: 'Offers',
     navAbout: 'About',
     navLocation: 'Location',
     cart: 'Cart',
@@ -175,7 +163,6 @@ DP.I18N = {
     heroSub:
       'In the heart of Verdun, we hand-pick the finest designer, oriental and niche perfumes — 100% authentic, competitively priced, and delivered everywhere in Lebanon.',
     heroCtaShop: 'Shop Now',
-    heroCtaOffers: 'View Offers',
     heroStat1: 'luxury perfumes',
     heroStat2: 'happy clients',
     heroStat3: 'authenticity',
@@ -184,9 +171,8 @@ DP.I18N = {
     catTitle: 'Shop by taste',
     catExplore: 'Explore',
     shopKicker: 'The Shop',
-    shopTitle: 'The Diamond Collection',
+    shopTitle: 'The Perfume Collection',
     filterAll: 'All',
-    filterOffers: 'Offers',
     searchPlaceholder: 'Search a fragrance…',
     noResults: 'No matching results',
     addToCart: 'Add to Cart',
@@ -195,12 +181,6 @@ DP.I18N = {
     bestSeller: 'Best Seller',
     off: 'OFF',
     newTag: 'New',
-    offersKicker: 'Limited time',
-    offersTitle: 'Deals that shine like diamonds',
-    offersSub: 'Real discounts on the finest fragrances — order before they are gone',
-    offerCta: 'Order Now',
-    offerSave: 'Save',
-    offerNote: 'Offers valid while stocks last — applied when ordering via the website',
     aboutKicker: 'Our Story',
     aboutTitle: 'A passion for perfume… since day one',
     aboutP1:
@@ -275,7 +255,6 @@ DP.I18N = {
     footHours: 'Opening Hours',
     footFollow: 'Follow Us',
     footRights: 'All rights reserved',
-    footMade: 'Crafted with passion in Beirut',
     waTooltip: 'Chat on WhatsApp',
     waMsg: 'Hello Diamond Perfume! I have a question about your fragrances.',
     curUSD: '$',

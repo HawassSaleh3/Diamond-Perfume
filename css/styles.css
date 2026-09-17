@@ -291,13 +291,21 @@ html[data-lang='ar'] .kicker {
 }
 .marquee {
   display: flex;
+  flex-wrap: nowrap;
   width: max-content;
-  animation: marquee 28s linear infinite;
+  will-change: transform;
+  /* --mq-shift = عرض مجموعة واحدة بالبكسل (يُحسب من js) */
+  animation: marquee var(--mq-dur, 24s) linear infinite;
 }
 html[dir='rtl'] .marquee {
   animation-name: marquee-rtl;
 }
-.marquee span {
+.mq-group {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+.mq-item {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
@@ -305,18 +313,18 @@ html[dir='rtl'] .marquee {
   color: var(--gold-light);
   white-space: nowrap;
 }
-.marquee i {
+.mq-item i {
   color: var(--gold);
   font-style: normal;
 }
 @keyframes marquee {
   to {
-    transform: translateX(-50%);
+    transform: translateX(calc(-1 * var(--mq-shift, 50%)));
   }
 }
 @keyframes marquee-rtl {
   to {
-    transform: translateX(50%);
+    transform: translateX(var(--mq-shift, 50%));
   }
 }
 
@@ -1067,83 +1075,6 @@ html[data-lang='ar'] .price .now {
   padding: 4rem 0;
 }
 
-/* ── Offers ─────────────────────────────────────────────── */
-.offers {
-  background:
-    radial-gradient(70% 90% at 85% 10%, rgba(212, 175, 55, 0.08), transparent 60%),
-    var(--bg-2);
-  border-block: 1px solid var(--line);
-}
-.offer-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.3rem;
-  margin-top: 3rem;
-}
-.offer-card {
-  position: relative;
-  border-radius: var(--radius);
-  overflow: hidden;
-  border: 1px solid var(--line-strong);
-  background: var(--panel);
-  transition: all 0.45s var(--ease);
-}
-.offer-card:hover {
-  transform: translateY(-7px);
-  box-shadow: var(--shadow-gold);
-}
-.offer-media {
-  aspect-ratio: 16 / 11;
-  overflow: hidden;
-  position: relative;
-}
-.offer-media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.7s var(--ease);
-}
-.offer-card:hover .offer-media img {
-  transform: scale(1.07);
-}
-.offer-off {
-  position: absolute;
-  top: 1rem;
-  inset-inline-start: 1rem;
-  background: var(--gold-grad);
-  color: #171204;
-  font-weight: 800;
-  padding: 0.4rem 0.95rem;
-  border-radius: 999px;
-  font-size: 0.92rem;
-  font-family: 'Jost', sans-serif;
-  box-shadow: 0 8px 20px -6px rgba(212, 175, 55, 0.6);
-}
-.offer-body {
-  padding: 1.3rem 1.35rem 1.45rem;
-}
-.offer-body h3 {
-  font-size: 1.2rem;
-  margin-bottom: 0.25rem;
-}
-.offer-body .notes {
-  color: var(--muted);
-  font-size: 0.85rem;
-  margin-bottom: 1rem;
-}
-.offer-foot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.8rem;
-}
-.offer-note {
-  margin-top: 2.2rem;
-  text-align: center;
-  color: var(--muted);
-  font-size: 0.88rem;
-}
-
 /* ── About ──────────────────────────────────────────────── */
 .about-grid {
   display: grid;
@@ -1273,6 +1204,31 @@ html[data-lang='ar'] .price .now {
 }
 .loc-item:hover {
   border-color: var(--line-strong);
+}
+a.loc-item,
+a.loc-link {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+a.loc-link:hover {
+  border-color: var(--gold);
+  background: rgba(212, 175, 55, 0.06);
+  transform: translateY(-2px);
+}
+.loc-item .loc-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.45rem;
+  font-size: 0.8rem;
+  color: var(--gold);
+  border-bottom: 1px dashed rgba(212, 175, 55, 0.5);
+  padding-bottom: 1px;
+}
+a.loc-link:hover .loc-open {
+  color: var(--gold-light);
+  border-bottom-color: var(--gold-light);
 }
 .loc-item svg {
   color: var(--gold);
@@ -1424,9 +1380,10 @@ html[data-lang='ar'] .price .now {
   padding-block: 1.4rem;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 1rem;
   flex-wrap: wrap;
+  text-align: center;
   color: var(--muted);
   font-size: 0.85rem;
 }
@@ -2167,12 +2124,6 @@ html[data-lang='ar'] .co-total-row b {
   }
   .cat-grid {
     grid-template-columns: repeat(2, 1fr);
-  }
-  .offer-grid {
-    grid-template-columns: 1fr;
-    max-width: 560px;
-    margin-inline: auto;
-    margin-top: 2.4rem;
   }
   .about-grid,
   .loc-grid,

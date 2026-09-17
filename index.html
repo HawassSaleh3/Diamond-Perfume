@@ -98,7 +98,7 @@
             <p class="hero-sub" data-i18n="heroSub"></p>
             <div class="hero-ctas">
               <a href="#shop" class="btn btn-gold" data-i18n="heroCtaShop"></a>
-              <a href="#offers" class="btn btn-ghost" data-i18n="heroCtaOffers"></a>
+              <a href="#location" class="btn btn-ghost" data-i18n="visitUs"></a>
             </div>
             <div class="hero-stats">
               <div class="hero-stat"><b class="gold-text num">+250</b><span data-i18n="heroStat1"></span></div>
@@ -146,19 +146,6 @@
         </div>
       </section>
 
-      <!-- ══ Offers ══ -->
-      <section class="section offers" id="offers">
-        <div class="container">
-          <div class="head-center reveal">
-            <span class="kicker center" data-i18n="offersKicker"></span>
-            <h2 class="display section-title"><span class="gold-text" data-i18n="offersTitle"></span></h2>
-            <p class="section-sub" data-i18n="offersSub"></p>
-          </div>
-          <div class="offer-grid" id="offer-grid"></div>
-          <div class="offer-note reveal" data-i18n="offerNote"></div>
-        </div>
-      </section>
-
       <!-- ══ About ══ -->
       <section class="section" id="about">
         <div class="container about-grid">
@@ -195,14 +182,15 @@
           </div>
           <div class="loc-grid">
             <div class="loc-info reveal">
-              <div class="loc-item">
+              <a class="loc-item loc-link" id="loc-maps-link" href="#" target="_blank" rel="noreferrer">
                 <span class="ic" data-icon="pin" data-size="22"></span>
                 <div>
                   <b data-i18n="locAddress"></b>
                   <span id="loc-address"></span>
                   <small id="loc-landmark"></small>
+                  <span class="loc-open" id="loc-open-hint" data-i18n="locOpen"></span>
                 </div>
-              </div>
+              </a>
               <a class="loc-item" id="loc-phone-link" href="tel:">
                 <span class="ic" data-icon="phone" data-size="22"></span>
                 <div>
@@ -332,7 +320,6 @@
 
         <div class="foot-bottom">
           <span id="foot-year"></span>
-          <span><span data-i18n="footMade"></span> ✦ Beirut</span>
         </div>
       </div>
     </footer>
